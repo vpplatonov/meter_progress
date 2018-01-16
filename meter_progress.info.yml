@@ -1,0 +1,27 @@
+
+# Module name.
+name: Meter / Progress Tags
+
+# Module detailed description.
+description: Field that implements newest HTML 5 tags &lt;meter&gt; and &lt;progress&gt;.
+
+# Specify in which module group the module will be displayed on page /admin/modules.
+package: Field types
+
+# Specify that it is a module. It can be (module, theme, profile).
+type: module
+version: VERSION
+
+# Key that defines the core version. Required!!!
+core: 8.x
+
+# Here specify the name of the route (which is declared in mypage.routing.yml file) for module configuration.
+configure: meter_progress.add_record
+
+# dependencies - the list of modules our module depends on.
+dependencies:
+  - field
+
+# test_dependencies - the list of modules that will be enabled when running automated tests.
+# hidden: TRUE - the option hides this module from the list of modules.
+# To show all hidden modules in the list, you should specify $settings['extension_discovery_scan_tests'] = TRUE в settings.php.

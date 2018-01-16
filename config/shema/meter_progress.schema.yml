@@ -1,0 +1,18 @@
+field.field_settings.meter_progress:
+  type: mapping
+  label: 'Meter / Progress settings'
+  mapping:
+    type:
+      type: string
+      label: 'Type'
+    max:
+      type: string
+      label: 'Max'
+
+field.formatter.settings.meter_progress_default:
+  type: mapping
+  label: 'Meter / Progress HTML 5 Tags MAX options value'
+  mapping:
+    max:
+      type: string
+      label: 'Default Max'
