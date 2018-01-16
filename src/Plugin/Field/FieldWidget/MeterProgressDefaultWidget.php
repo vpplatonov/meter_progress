@@ -42,7 +42,6 @@ class MeterProgressDefaultWidget extends WidgetBase {
         ];
 
         $elements = array();
-
         $elements['max'] = [
             '#type' => 'textfield',
             '#title' => t('Max'),
