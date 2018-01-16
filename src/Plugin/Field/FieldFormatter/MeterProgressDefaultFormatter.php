@@ -9,8 +9,7 @@ namespace Drupal\meter_progress\Plugin\Field\FieldFormatter;
 
 use Drupal\Core\Field\FormatterBase;
 use Drupal\Core\Field\FieldItemListInterface;
-use Drupal\Core\Form\FormStateInterface;
-use Drupal\Component\Utility\Unicode;
+use Drupal\meter_progress\Plugin\Field\FieldType\MeterProgressItem;
 
 /**
  * Plugin implementation of the 'meter_progress_default' formatter.
@@ -42,16 +41,16 @@ class MeterProgressDefaultFormatter extends FormatterBase {
 
         $element = [];
         $settings = $this->fieldDefinition->getSettings();
-        $max = $settings['max'];
-        unset($settings['type'], $settings['max']);
+        unset($settings['type']);
 
         foreach ($items as $delta => $item) {
             // Render each element as markup.
             $type = $this->fieldDefinition->getSetting('type');
-            $tag_props = 'value="' . $item->value . '" max="' . $max . '"';
+            $tag_props = 'value="' . $item->value . '" max="'
+                . $item->max . '"';
             if ($type === 'meter') {
-                foreach (array_values($settings) as $attr => $val) {
-                    $tag_props .= ' ' . $attr . '="' . $val . '"';
+                foreach (MeterProgressItem::$meter_attributes as $attr) {
+                    $tag_props .= ' ' . $attr . '="' . $item->{$attr} . '"';
                 }
             }
             $element[$delta] = array(

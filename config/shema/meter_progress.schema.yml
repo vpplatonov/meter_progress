@@ -5,29 +5,3 @@ field.field_settings.meter_progress:
     type:
       type: string
       label: 'Type'
-    max:
-      type: string
-      label: 'Max'
-    form:
-      type: string
-      label: 'Form'
-    high:
-      type: string
-      label: 'High'
-    low:
-      type: string
-      label: 'Low'
-    min:
-      type: string
-      label: 'Min'
-    optimum:
-      type: string
-      label: 'Optimum'
-
-field.formatter.settings.meter_progress_default:
-  type: mapping
-  label: 'Meter / Progress HTML 5 Tags MAX options value'
-  mapping:
-    max:
-      type: string
-      label: 'Default Max'

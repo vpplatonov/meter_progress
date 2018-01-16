@@ -7,7 +7,6 @@ use Drupal\Core\Field\FieldItemBase;
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\Core\TypedData\DataDefinition;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Component\Utility\Unicode;
 
 
 /**
@@ -37,6 +36,10 @@ class MeterProgressItem extends FieldItemBase implements FieldItemInterface {
 
         $properties = [];
         $properties['value'] = DataDefinition::create('string')->setLabel(t('Tag value'));
+        $properties['max'] = DataDefinition::create('string')->setLabel(t('Max value'));
+        foreach (MeterProgressItem::$meter_attributes as $attr) {
+            $properties[$attr] = DataDefinition::create('string')->setLabel(t('@attr value', array('@attr' => $attr)));
+        }
 
         return $properties;
     }
@@ -49,17 +52,25 @@ class MeterProgressItem extends FieldItemBase implements FieldItemInterface {
      * {@inheritdoc}
      */
     public static function schema(FieldStorageDefinitionInterface $field_definition) {
+        $field_type_text =  array(
+            'type' => 'text',
+            'size' => 'tiny',
+            'not null' => FALSE,
+        );
+
+        $columns = array();
+        foreach (MeterProgressItem::$meter_attributes as $attr) {
+            $columns[$attr] = $field_type_text;
+        }
+
         return array(
             // Columns contains the values that the field will store.
             'columns' => array(
                 // List the values that the field will save.
                 // This field will only save a single value, 'value'.
-                'value' => array(
-                    'type' => 'text',
-                    'size' => 'tiny',
-                    'not null' => FALSE,
-                ),
-            ),
+                'value' => $field_type_text,
+                'max' => $field_type_text,
+            ) + $columns,
         );
     }
 
@@ -70,7 +81,6 @@ class MeterProgressItem extends FieldItemBase implements FieldItemInterface {
         return array(
                 // Declare a single setting, 'type', with a default value of 'meter'.
                 'type' => 'meter',
-                'max' => '100',
             ) + parent::defaultFieldSettings();
     }
 
@@ -90,34 +100,6 @@ class MeterProgressItem extends FieldItemBase implements FieldItemInterface {
             ),
             '#default_value' => $this->getSetting('type'),
         );
-
-        $element_definition = array(
-            '#type' => 'textfield',
-            '#size' => 7,
-            '#maxlength' => 7,
-        );
-
-        $element['max'] = $element_definition + array(
-            '#title' => $this->t('Max'),
-            '#default_value' => $this->getSetting('max'),
-        );
-
-        foreach (MeterProgressItem::$meter_attributes as $attr) {
-            $element[$attr] = $element_definition + array(
-                '#title' => $this->t(Unicode::ucfirst($attr)),
-                '#default_value' => $this->getSetting($attr),
-                '#states' => array(
-                    // Hide the settings when the progress type is selected.
-                    'visible' => array(
-                        ':input[name="settings[type]"]' => array('value' => 'meter'),
-                    ),
-                ),
-            );
-            if ($attr === 'form') {
-                $element[$attr]['#size'] = 60;
-                $element[$attr]['#maxlength'] = 60;
-            }
-        }
 
         return $element;
     }
