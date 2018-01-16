@@ -10,6 +10,7 @@ namespace Drupal\meter_progress\Plugin\Field\FieldFormatter;
 use Drupal\Core\Field\FormatterBase;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Component\Utility\Unicode;
 
 /**
  * Plugin implementation of the 'meter_progress_default' formatter.
@@ -40,15 +41,22 @@ class MeterProgressDefaultFormatter extends FormatterBase {
     public function viewElements(FieldItemListInterface $items, $langcode) {
 
         $element = [];
-        $max = $this->fieldDefinition->getSetting('max');
+        $settings = $this->fieldDefinition->getSettings();
+        $max = $settings['max'];
+        unset($settings['type'], $settings['max']);
 
         foreach ($items as $delta => $item) {
             // Render each element as markup.
+            $type = $this->fieldDefinition->getSetting('type');
+            $tag_props = 'value="' . $item->value . '" max="' . $max . '"';
+            if ($type === 'meter') {
+                foreach (array_values($settings) as $attr => $val) {
+                    $tag_props .= ' ' . $attr . '="' . $val . '"';
+                }
+            }
             $element[$delta] = array(
                 '#type' => 'markup',
-                '#markup' => $this->fieldDefinition->getSetting('type') === 'meter'
-                    ? '<meter value="' . $item->value . '" max="' . $max . '"></meter>'
-                    : '<progress value="' . $item->value . '" max="' . $max . '"></progress>',
+                '#markup' => "<{$type} " . $tag_props . "></{$type}>",
             );
         }
 
@@ -69,11 +77,23 @@ class MeterProgressDefaultFormatter extends FormatterBase {
      * {@inheritdoc}
      */
     public function settingsForm(array $form, FormStateInterface $form_state) {
+        $settings = $this->fieldDefinition->getSettings();
         $element['max'] = [
             '#title' => t('Max options value'),
             '#type' => 'string',
-            '#default_value' => $this->getSetting('max'),
+            '#default_value' => $settings['max'],
         ];
+
+        if ($settings['type'] === 'meter') {
+            unset($settings['type'], $settings['max']);
+            foreach ($settings as $attr => $val) {
+                $element['max'] = [
+                    '#title' => t('@attr options value', array('@attr' => t(Unicode::ucfirst($attr)))),
+                    '#type' => 'string',
+                    '#default_value' => $val,
+                ];
+            }
+        }
 
         return $element;
     }

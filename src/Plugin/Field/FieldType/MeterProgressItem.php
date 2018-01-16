@@ -7,6 +7,7 @@ use Drupal\Core\Field\FieldItemBase;
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\Core\TypedData\DataDefinition;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Component\Utility\Unicode;
 
 
 /**
@@ -23,13 +24,19 @@ use Drupal\Core\Form\FormStateInterface;
 */
 class MeterProgressItem extends FieldItemBase implements FieldItemInterface {
 
+    static $meter_attributes = array(
+        // Attribute	Value	Description
+        'form',   //	form_id	Specifies one or more forms the <meter> element belongs to
+        'high',   //	number	Specifies the range that is considered to be a high value
+        'low',    //	number	Specifies the range that is considered to be a low value
+        'min',    // 	number	Specifies the minimum value of the range
+        'optimum',//    number	Specifies what value is the optimal value for the gauge
+    );
+
     public static function propertyDefinitions(FieldStorageDefinitionInterface $field_definition) {
 
         $properties = [];
-        $output['columns']['max'] = array(
-            'type' => 'varchar',
-            'length' => 255,
-        );
+        $properties['value'] = DataDefinition::create('string')->setLabel(t('Tag value'));
 
         return $properties;
     }
@@ -86,11 +93,33 @@ class MeterProgressItem extends FieldItemBase implements FieldItemInterface {
             '#weight' => -100,
         );
 
-        $element['max'] = array(
-            '#title' => $this->t('Max'),
+        $element_definition = array(
             '#type' => 'textfield',
+            '#size' => 7,
+            '#maxlength' => 7,
+        );
+
+        $element['max'] = $element_definition + array(
+            '#title' => $this->t('Max'),
             '#default_value' => $this->getSetting('max'),
         );
+
+        foreach (MeterProgressItem::$meter_attributes as $attr) {
+            $element[$attr] = $element_definition + array(
+                '#title' => $this->t(Unicode::ucfirst($attr)),
+                '#default_value' => $this->getSetting($attr),
+                '#states' => array(
+                    // Hide the settings when the progress type is selected.
+                    'visible' => array(
+                        ':input[name="settings[type]"]' => array('value' => 'meter'),
+                    ),
+                ),
+            );
+            if ($attr === 'form') {
+                $element[$attr]['#size'] = 60;
+                $element[$attr]['#maxlength'] = 60;
+            }
+        }
 
         return $element;
     }

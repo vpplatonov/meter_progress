@@ -40,9 +40,6 @@ class MeterProgressDefaultWidget extends WidgetBase {
             '#default_value' => $value,
             '#size' => 7,
             '#maxlength' => 7,
-            '#element_validate' => [
-                [static::class, 'validate'],
-            ],
         ];
 
         return ['value' => $element];
