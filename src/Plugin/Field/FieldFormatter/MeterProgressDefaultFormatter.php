@@ -73,29 +73,4 @@ class MeterProgressDefaultFormatter extends FormatterBase {
         ] + parent::defaultSettings();
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function settingsForm(array $form, FormStateInterface $form_state) {
-        $settings = $this->fieldDefinition->getSettings();
-        $element['max'] = [
-            '#title' => t('Max options value'),
-            '#type' => 'string',
-            '#default_value' => $settings['max'],
-        ];
-
-        if ($settings['type'] === 'meter') {
-            unset($settings['type'], $settings['max']);
-            foreach ($settings as $attr => $val) {
-                $element['max'] = [
-                    '#title' => t('@attr options value', array('@attr' => t(Unicode::ucfirst($attr)))),
-                    '#type' => 'string',
-                    '#default_value' => $val,
-                ];
-            }
-        }
-
-        return $element;
-    }
-
 }

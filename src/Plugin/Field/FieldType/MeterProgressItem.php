@@ -25,12 +25,12 @@ use Drupal\Component\Utility\Unicode;
 class MeterProgressItem extends FieldItemBase implements FieldItemInterface {
 
     static $meter_attributes = array(
-        // Attribute	Value	Description
-        'form',   //	form_id	Specifies one or more forms the <meter> element belongs to
-        'high',   //	number	Specifies the range that is considered to be a high value
-        'low',    //	number	Specifies the range that is considered to be a low value
-        'min',    // 	number	Specifies the minimum value of the range
-        'optimum',//    number	Specifies what value is the optimal value for the gauge
+        // Attribute	Value	Description.
+        'form',   //	form_id	Specifies one or more forms the <meter> element belongs to.
+        'high',   //	number	Specifies the range that is considered to be a high value.
+        'low',    //	number	Specifies the range that is considered to be a low value.
+        'min',    // 	number	Specifies the minimum value of the range.
+        'optimum',//    number	Specifies what value is the optimal value for the gauge.
     );
 
     public static function propertyDefinitions(FieldStorageDefinitionInterface $field_definition) {
@@ -50,10 +50,10 @@ class MeterProgressItem extends FieldItemBase implements FieldItemInterface {
      */
     public static function schema(FieldStorageDefinitionInterface $field_definition) {
         return array(
-            // columns contains the values that the field will store
+            // Columns contains the values that the field will store.
             'columns' => array(
-                // List the values that the field will save. This
-                // field will only save a single value, 'value'
+                // List the values that the field will save.
+                // This field will only save a single value, 'value'.
                 'value' => array(
                     'type' => 'text',
                     'size' => 'tiny',
@@ -68,8 +68,7 @@ class MeterProgressItem extends FieldItemBase implements FieldItemInterface {
      */
     public static function defaultFieldSettings() {
         return array(
-                // Declare a single setting, 'type', with a default
-                // value of 'meter'
+                // Declare a single setting, 'type', with a default value of 'meter'.
                 'type' => 'meter',
                 'max' => '100',
             ) + parent::defaultFieldSettings();
@@ -81,7 +80,7 @@ class MeterProgressItem extends FieldItemBase implements FieldItemInterface {
     public function fieldSettingsForm(array $form, FormStateInterface $form_state) {
 
         $element = array();
-        // The key of the element should be the setting name
+        // The key of the element should be the setting name.
         $element['type'] = array(
             '#title' => $this->t('Type'),
             '#type' => 'select',
@@ -90,7 +89,6 @@ class MeterProgressItem extends FieldItemBase implements FieldItemInterface {
                 'progress' => $this->t('Progress'),
             ),
             '#default_value' => $this->getSetting('type'),
-            '#weight' => -100,
         );
 
         $element_definition = array(
